@@ -98,12 +98,10 @@ const createBook = async function (req, res) {
       });
     let checkUser = await userModel.findById(userId);
     if (!checkUser)
-      return res
-        .status(404)
-        .send({
-          status: false,
-          message: "No documents found with this user ID",
-        });
+      return res.status(404).send({
+        status: false,
+        message: "No documents found with this user ID",
+      });
 
     let created = await bookModel.create(body);
     return res
@@ -123,16 +121,16 @@ const getBooks = async function (req, res) {
         .status(404)
         .send({ status: false, message: "Please enter some data" });
     if (!(userId || category || subcategory))
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "userId,category or subcategory expected",
-        });
-    if (!mongoose.Types.ObjectId.isValid(userId))
-      return res
-        .status(400)
-        .send({ status: false, msg: "user ID is incorrect" });
+      return res.status(400).send({
+        status: false,
+        message: "userId,category or subcategory expected",
+      });
+    if (userId) {
+      if (!mongoose.Types.ObjectId.isValid(userId))
+        return res
+          .status(400)
+          .send({ status: false, msg: "user ID is incorrect" });
+    }
     let bookData = await bookModel
       .find({ ...query, isDeleted: false })
       .select({
