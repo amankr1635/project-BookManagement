@@ -1,1 +1,1 @@
-const reviewController = require("../models/reviewModel");
+const reviewModel = require("../models/reviewModel");

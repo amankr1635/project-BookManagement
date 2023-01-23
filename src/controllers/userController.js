@@ -1,4 +1,3 @@
-const bookModel = require("../models/bookModel");
 const userModel = require("../models/userModel");
 
 // - Create a user - atleast 5 users
