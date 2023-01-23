@@ -6,11 +6,13 @@ const bookController = require("../controllers/bookController")
 
 router.post("/register", userController.createUser)
 router.post("/books",bookController.createBook)
+router.post("/login", userController.loginUser)
 
 
 
-router.all("/*",function(req,res){
-    return res.status(400).send({status: false, message: "invlalid http request"})
-} )
+
+router.all("/*", function (req, res) {
+    return res.status(400).send({ status: false, message: "invlalid http request" })
+})
 
 module.exports = router
