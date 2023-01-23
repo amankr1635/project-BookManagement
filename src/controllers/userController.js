@@ -68,11 +68,17 @@ const createUser = async function (req, res) {
       .status(400)
       .send({ status: false, message: "Please enter valid pincode" });
 
-  let findData = await userModel.findOne({ phone: body.phone });
-  if (findData) {
+  let findPhone = await userModel.findOne({ phone: body.phone });
+  if (findPhone) {
     return res
       .status(200)
       .send({ status: true, message: "User already registerd" });
+  }
+  let findEmail = await userModel.findOne({ email: body.email });
+  if (findEmail) {
+    return res
+      .status(200)
+      .send({ status: true, message: "email already registerd" });
   }
   let createData = await userModel.create(body);
   return res

@@ -24,6 +24,16 @@ const passwordVal = function(password){
     const validPin = /^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$/
     return validPin.test(pincode)
  } 
+ const isValidString= function(input){
+if(typeof input=="number"||input==null||input==undefined){
+return false}
+if(typeof input=="string" && input.trim().length==0){
+return false}
 
- 
-module.exports= {isValidateEmail, passwordVal, isValidName, isValidNo,isValidPin}
+return true
+ }
+ const regForDate=function(input) {
+    let re = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/
+    return re.test(input)
+ }
+module.exports= {isValidateEmail, passwordVal, isValidName, isValidNo,isValidPin,regForDate,isValidString}
