@@ -118,7 +118,7 @@ const loginUser = async function (req, res) {
     let token = jwt.sign(
       { userId: userData._id.toString() },
       "AAAB-Project04",
-      { expiresIn: "2m" }
+      { expiresIn: "24h" }
     );
 
     return res

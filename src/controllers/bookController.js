@@ -103,12 +103,19 @@ const createBook = async function (req, res) {
         message: "No documents found with this user ID",
       });
 
+
+    //Authorization---------------------------------------------
+    let tokenId = req.decodedToken.userId;
+    if (tokenId != checkUser._id) return res.status(403).send({
+      status: false,
+      message: "You are not authorized",
+    });
     let created = await bookModel.create(body);
     return res
       .status(201)
       .send({ status: true, message: "Success", data: created });
   } catch (err) {
-    res.status(500).send({ statu: false, message: err.message });
+    res.status(500).send({ status: false, message: err.message });
   }
 };
 
