@@ -105,12 +105,13 @@ const getBooks = async function (req, res) {
     return res
       .status(404)
       .send({ status: false, message: "Please enter some data" });
-      if(!books.userId||!books.category||!books.subcategory) return res.status(400).send({status:false,message:"userId,category or subcategory expected"})
+      
+      if(!(books.userId||books.category||books.subcategory)) return res.status(400).send({status:false,message:"userId,category or subcategory expected"})
+      if(books.userId){
       if (!mongoose.Types.ObjectId.isValid(books.userId))
     return res.status(400).send({ status: false, msg: "user ID is incorrect" });
-  let bookData = await bookModel
-    .find({ ...books, isDeleted: false })
-    .select({
+      }
+  let bookData = await bookModel.find({ ...books, isDeleted: false }).select({
       title: 1,
       excerpt: 1,
       userId: 1,
