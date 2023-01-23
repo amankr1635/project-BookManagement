@@ -1,5 +1,8 @@
 const userModel = require("../models/userModel");
-const {isValidateEmail, passwordVal,isValidName,  isValidNo,  isValidPin,} = require("../validators/validation");
+const { isValidateEmail, passwordVal, isValidName, isValidNo, isValidPin, } = require("../validators/validation");
+const jwt = require('jsonwebtoken')
+
+
 
 const createUser = async function (req, res) {
   let body = req.body;
@@ -77,4 +80,32 @@ const createUser = async function (req, res) {
     .send({ status: true, message: "Suscess", data: createData });
 };
 
+
+
+const loginUser = async function (req, res) {
+  try {
+    let data = req.body
+    const { email, password } = data
+
+    if (!email || !password) res.status(400).send({ status: false, message: "Please enter Email Id and Password" })
+
+
+    let userData = await userModel.findOne({ email: email, password: password })
+
+    if (!userData) res.status(400).send({ status: false, message: "Invalid Email or Password" })
+
+    let token = jwt.sign({ userData: userData._id.toString() }, "AAAB-Project04", { expiresIn: '2m' })
+    
+
+    return res.status(200).send({ status: true, message: "Success", data: token })
+
+
+  }
+  catch (err) {
+    res.status(500).send({ status: false, message: "Login User", Error: err.message })
+  }
+
+}
+
 module.exports.createUser = createUser;
+module.exports.loginUser = loginUser;
