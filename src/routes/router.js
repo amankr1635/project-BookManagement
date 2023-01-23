@@ -3,11 +3,12 @@ const router = express.Router();
 
 const userController = require("../controllers/userController");
 const bookController = require("../controllers/bookController");
+const {authentication} = require("../middleware/middleware");
 
 router.post("/register", userController.createUser);
-router.post("/books", bookController.createBook);
+router.post("/books", authentication, bookController.createBook);
 router.post("/login", userController.loginUser);
-router.get("/books", bookController.getBooks);
+router.get("/books", authentication , bookController.getBooks);
 
 
 
