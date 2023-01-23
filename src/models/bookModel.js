@@ -6,45 +6,46 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      trim: true
+      trim: true,
     },
     excerpt: {
       type: String,
-      required: true
+      required: true,
     },
     userId: {
       type: ObjectId,
       required: true,
-      ref: "user"
+      ref: "user",
     },
     ISBN: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     category: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     subcategory: {
       type: String,
-      required: true
+      required: true,
     },
     reviews: {
       type: Number,
-      default: 0
+      default: 0,
     },
     deletedAt: Date,
     isDeleted: {
       type: Boolean,
-      default: false
+      default: false,
     },
     releasedAt: {
       type: Date,
-      required: true
+      required: true,
     },
-  },{ timestamps: true }
+  },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("book", bookSchema);
