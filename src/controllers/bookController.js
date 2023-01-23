@@ -122,7 +122,7 @@ const getBooks = async function (req, res) {
       return res
         .status(404)
         .send({ status: false, message: "Please enter some data" });
-    if (!userId || !category || !subcategory)
+    if (!(userId || category || subcategory))
       return res
         .status(400)
         .send({
