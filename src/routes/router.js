@@ -7,6 +7,7 @@ const bookController = require("../controllers/bookController")
 router.post("/register", userController.createUser)
 router.post("/books",bookController.createBook)
 router.post("/login", userController.loginUser)
+router.get("/books", bookController.getBooks)
 
 
 
