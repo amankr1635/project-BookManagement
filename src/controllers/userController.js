@@ -77,14 +77,14 @@ const createUser = async function (req, res) {
     let findPhone = await userModel.findOne({ phone: phone });
     if (findPhone) {
       return res
-        .status(200)
-        .send({ status: true, message: "User already registerd" });
+        .status(400)
+        .send({ status: false, message: "User already registerd" });
     }
     let findEmail = await userModel.findOne({ email: email });
     if (findEmail) {
       return res
-        .status(200)
-        .send({ status: true, message: "email already registerd" });
+        .status(400)
+        .send({ status: false, message: "email already registerd" });
     }
     let createData = await userModel.create(body);
     return res
