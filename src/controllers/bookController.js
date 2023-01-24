@@ -132,7 +132,7 @@ const getBooks = async function (req, res) {
       let allBooks = await bookModel.find({ isDeleted: false });
       return res
         .status(200)
-        .send({ status: true, message: "Success", data: allBooks });
+        .send({ status: true, message: "Book List", data: allBooks });
     }
     if (!(userId || category || subcategory))
       return res.status(400).send({
@@ -164,7 +164,7 @@ const getBooks = async function (req, res) {
     }
     return res
       .status(200)
-      .send({ status: true, message: "success", data: bookData });
+      .send({ status: true, message: "Book List", data: bookData });
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
