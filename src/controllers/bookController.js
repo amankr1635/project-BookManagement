@@ -183,13 +183,17 @@ const getBooksByParams = async function (req, res) {
 }
 
 const updateBooks = async function (req, res) {
-  let param = req.params.bookId
+  let bookId = req.params.bookId
   let body = req.body
   let { title, excerpt, releasedAt, ISBN } = body
 
-  let findData = await bookModel.findOne({ body })
+  let findData = await bookModel.find({ title: title, excerpt: excerpt, releasedAt: releasedAt, ISBN: ISBN })
   console.log(findData)
   if (findData) return res.status(200).send({ status: true, message: "data already exist" })
+
+  let updateData = await bookModel.findOneAndUpdate({ _id: bookId }, { title: title, excerpt: excerpt, releasedAt: releasedAt, ISBN: ISBN }, { new: true })
+
+  return res.status(200).send({ status: true, message: "Success", data: updateData })
 
 
 
