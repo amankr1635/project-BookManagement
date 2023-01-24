@@ -187,11 +187,11 @@ const updateBooks = async function (req, res) {
   let body = req.body
   let { title, excerpt, releasedAt, ISBN } = body
 
-  let findData = await bookModel.find({ title: title, excerpt: excerpt, releasedAt: releasedAt, ISBN: ISBN })
+  let findData = await bookModel.findOne({...body})
   console.log(findData)
   if (findData) return res.status(200).send({ status: true, message: "data already exist" })
 
-  let updateData = await bookModel.findOneAndUpdate({ _id: bookId }, { title: title, excerpt: excerpt, releasedAt: releasedAt, ISBN: ISBN }, { new: true })
+  let updateData = await bookModel.findOneAndUpdate({ _id: bookId }, { ...body }, { new: true })
 
   return res.status(200).send({ status: true, message: "Success", data: updateData })
 
