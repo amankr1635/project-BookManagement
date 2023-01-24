@@ -9,7 +9,7 @@ router.post("/register", userController.createUser);
 router.post("/books", authentication, bookController.createBook);
 router.post("/login", userController.loginUser);
 router.get("/books", authentication , bookController.getBooks);
-
+router.delete("/books/:bookId", bookController.deleteBookPathParam)
 
 
 

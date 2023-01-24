@@ -169,5 +169,25 @@ const getBooks = async function (req, res) {
   }
 };
 
+
+const deleteBookPathParam = async function(req,res){
+  let bookId = req.params.bookId
+  // if (!mongoose.Types.ObjectId.isValid(bookId))return res.status(400).send({ status: false, msg: "Book ID is incorrect" });
+  //  let findBook = await bookModel.findById({_id:bookId})
+  //  if(!findBook) return res.status(400).send({status:false,message:"No document exist"})
+  //  if(findBook.isDeleted==true){
+  //    return res.status(400).send({status:false,message:"No document found"})
+  //  }
+   let updatedBook = await bookModel.findOneAndUpdate({_id:bookId},{isDeleted:true},{new:true})
+   return res.status(200).send({status:true,message:"Books deleted"})
+
+ }
+
+
+
+
 module.exports.createBook = createBook;
 module.exports.getBooks = getBooks;
+module.exports.deleteBookPathParam = deleteBookPathParam
+
+
