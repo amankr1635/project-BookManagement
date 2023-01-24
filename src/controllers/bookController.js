@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bookModel = require("../models/bookModel");
 const userModel = require("../models/userModel");
 const reviewModel = require("../models/reviewModel");
-const { regForDate, isValidString } = require("../validators/validation");
+const { regForDate, isValidString ,ISBNRegex} = require("../validators/validation");
 
 const createBook = async function (req, res) {
   try {
@@ -56,12 +56,16 @@ const createBook = async function (req, res) {
     if (!isValidString(ISBN))
       return res
         .status(400)
-        .send({ status: false, message: "Enter ISBN in string" });
+        .send({ status: false, message: "Enter ISBN in string 1" });
 
-    if (ISBN.length != 10 && ISBN.length != 13)
+ if (!ISBNRegex(ISBN))
       return res
         .status(400)
-        .send({ status: false, message: "ISBN must be of length 10 or 13" });
+        .send({ status: false, message: "Enter valid ISBN" });
+    // if (ISBN.length != 10 && ISBN.length != 13)
+    //   return res
+    //     .status(400)
+    //     .send({ status: false, message: "ISBN must be of length 10 or 13" });
     let isbnPresent = await bookModel.findOne({ ISBN: ISBN });
     if (isbnPresent)
       return res
@@ -123,10 +127,12 @@ const getBooks = async function (req, res) {
   try {
     let query = req.query;
     const { userId, category, subcategory } = query;
-    if (Object.keys(query).length == 0)
+    if (Object.keys(query).length == 0){
+      let allBooks = await bookModel.find({isDeleted: false})
       return res
-        .status(404)
-        .send({ status: false, message: "Please enter some data" });
+      .status(200)
+      .send({ status: true, message :"Success", data : allBooks });
+    }
     if (!(userId || category || subcategory))
       return res.status(400).send({
         status: false,

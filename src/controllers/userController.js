@@ -109,7 +109,6 @@ const loginUser = async function (req, res) {
       email: email,
       password: password,
     });
-
     if (!userData)
       res
         .status(400)

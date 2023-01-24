@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { default: mongoose } = require("mongoose");
 
-// ------Authorisation------
+// ------Authentication------
 
 const authentication = async function (req,res,next){
 let token = req.headers["x-auth-token"];
@@ -18,6 +18,8 @@ next()
 
 })
 }
+// -----Authorization------------
+
 const authorization= async function (req,res,next){
     let userId=req.decodedToken.userId;
     console.log(userId)
