@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const reviewModel = require("../models/reviewModel");
 const bookModel = require("../models/bookModel");
-const {isValidName} = require("../validators/validation")
+const { isValidName, regForDate } = require("../validators/validation");
 
-const addReview = async function (req, res) {
+const createReview = async function (req, res) {
   let { bookId, review } = req.params;
   let body = req.body;
 
@@ -11,37 +11,85 @@ const addReview = async function (req, res) {
     return res
       .status(400)
       .send({ status: false, message: "enter valid id in params" });
-      let findBook = await bookModel.findOne({ _id: bookId, isDeleted: false});
-      if (!findBook)
-        return res.status(404).send({ status: false, message: "no data found" });    
+      if (!mongoose.Types.ObjectId.isValid(body.bookId))
+    return res
+      .status(400)
+      .send({ status: false, message: "enter valid id in body" });
+      
+  let findBook = await bookModel.findOne({ _id: bookId, isDeleted: false });
+  if (!findBook)
+    return res.status(404).send({ status: false, message: "no data found" });
   if (!body)
     return res
       .status(400)
       .send({ status: false, message: "please enter data in body" });
-  if(!body.bookId)return res.status(400).send({status: false, message: "please enter bookId"})
-//   let findBook = await bookModel.findOne({_id: body.bookId}) 
-//   if(!findBook)
-  if(!body.reviewedBy)return res.status(400).send({status: false, message: "please enter reviewedBy"})
-  if(!isValidName(body.reviewedBy)) return res.status(400).send({status: false, message: "enter only alphabets"})
-  if(!body.reviewedAt)return res.status(400).send({status: false, message: "please enter reviewedAt"})
-  if(!body.rating)return res.status(400).send({status: false, message: "please enter rating"})
-  if(typeof body.rating != "number") return res.status(400).send({status: false, message: "enter rating in number"})
-  if(body.rating <1 ||body.rating >5) return res.status(400).send({status:false, message:"rating must be between 1&5"})
+  if (!body.bookId)
+    return res
+      .status(400)
+      .send({ status: false, message: "please enter bookId" });
+  let findBookBybody = await bookModel.findOne({ _id: body.bookId });
+  if (!findBookBybody)
+    return res.status(400).send({ status: false, message: "no data exist" }); 
+  if (!body.reviewedBy)
+    return res
+      .status(400)
+      .send({ status: false, message: "please enter reviewedBy" });
+  if (!isValidName(body.reviewedBy))
+    return res
+      .status(400)
+      .send({ status: false, message: "enter only alphabets" });
+  if (!body.reviewedAt)
+    return res
+      .status(400)
+      .send({ status: false, message: "please enter reviewedAt" });
+  if (regForDate(body.reviewedAt) == false)
+    return res.status(400).send({
+      status: false,
+      message: "Please enter a valid date(YYYY-MM-DD)",
+    });
+  if (!body.rating)
+    return res
+      .status(400)
+      .send({ status: false, message: "please enter rating" });
+  if (typeof body.rating != "number")
+    return res
+      .status(400)
+      .send({ status: false, message: "enter rating in number" });
+  if (body.rating < 1 || body.rating > 5)
+    return res
+      .status(400)
+      .send({ status: false, message: "rating must be between 1&5" });
 
-
-
-
-
-  let createReview = await reviewModel.create(body);
+  let createData = await reviewModel.create(body);
   let responseObject = {
-    _id: createReview._id,
-    bookId: createReview.bookId,
-    reviewedBy: createReview.reviewedBy,
-    reviewedAt: createReview.reviewedAt,
-    rating: createReview.rating,
-    review: createReview.review,
+    _id: createData._id,
+    bookId: createData.bookId,
+    reviewedBy: createData.reviewedBy,
+    reviewedAt: createData.reviewedAt,
+    rating: createData.rating,
+    review: createData.review,
   };
-  return res.status(201).send({ status: true, data: responseObject });
+  let bookData = await bookModel
+    .findOne({ _id: bookId, isDeleted: false })
+    .select({
+      __v: 0,
+      ISBN: 0,
+      createdAt: 0,
+      updatedAt: 0,
+      isDeleted: 0,
+      releasedAt: 0,
+    })
+    .lean();
+  if (!bookData)
+    return res
+      .status(404)
+      .send({ status: false, message: "no book data found" });
+
+  bookData.reviews = responseObject;
+
+  return res
+    .status(200)
+    .send({ status: true, message: "Books list", data: bookData });
 };
 
-module.exports.addReview = addReview;
+module.exports.createReview = createReview;
