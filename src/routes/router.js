@@ -13,7 +13,7 @@ router.get("/books", authentication, bookController.getBooks);
 router.get("/books/:bookId", authentication, bookController.getBooksByParams);
 router.put("/books/:bookId",authentication,authorization,  bookController.updateBooks);
 router.delete("/books/:bookId", authentication, authorization, bookController.deleteBookPathParam);
-router.post("/books/:bookId/review", reviewController.addReview);
+router.post("/books/:bookId/review", reviewController.createReview);
 
 
 

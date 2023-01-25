@@ -11,14 +11,16 @@ const createReview = async function (req, res) {
     return res
       .status(400)
       .send({ status: false, message: "enter valid id in params" });
-      if (!mongoose.Types.ObjectId.isValid(body.bookId))
+  if (!mongoose.Types.ObjectId.isValid(body.bookId))
     return res
       .status(400)
       .send({ status: false, message: "enter valid id in body" });
-      
+
   let findBook = await bookModel.findOne({ _id: bookId, isDeleted: false });
   if (!findBook)
-    return res.status(404).send({ status: false, message: "no data found" });
+    return res
+      .status(404)
+      .send({ status: false, message: "no book data found" });
   if (!body)
     return res
       .status(400)
@@ -29,11 +31,11 @@ const createReview = async function (req, res) {
       .send({ status: false, message: "please enter bookId" });
   let findBookBybody = await bookModel.findOne({ _id: body.bookId });
   if (!findBookBybody)
-    return res.status(400).send({ status: false, message: "no data exist" }); 
-  if (!body.reviewedBy)
-    return res
-      .status(400)
-      .send({ status: false, message: "please enter reviewedBy" });
+    return res.status(400).send({ status: false, message: "no data exist" });
+  
+  if (!body.reviewedBy || !body.reviewedBy.trim()) body.reviewedBy = "Guest";
+  
+  body.reviewedBy = body.reviewedBy.trim();
   if (!isValidName(body.reviewedBy))
     return res
       .status(400)

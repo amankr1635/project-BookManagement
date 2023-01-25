@@ -10,7 +10,8 @@ const reviewSchema = new mongoose.Schema({
         type:String,
         required:true,  // to check do we have to enter name or get from db
         default:"Guest",
-        value : String
+        value : String,
+
     },
     reviewedAt:{
         type:Date,
