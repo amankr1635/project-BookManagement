@@ -101,7 +101,7 @@ const loginUser = async function (req, res) {
     const { email, password } = data;
 
     if (!email || !password)
-      res
+      return res
         .status(400)
         .send({ status: false, message: "Please enter Email Id and Password" });
 
@@ -110,7 +110,7 @@ const loginUser = async function (req, res) {
       password: password,
     });
     if (!userData)
-      res
+      return res
         .status(400)
         .send({ status: false, message: "Invalid Email or Password" });
 
@@ -124,7 +124,7 @@ const loginUser = async function (req, res) {
       .status(200)
       .send({ status: true, message: "Success", data: token });
   } catch (err) {
-    res
+    return res
       .status(500)
       .send({ status: false, message: "Login User", Error: err.message });
   }
