@@ -14,7 +14,7 @@ router.get("/books/:bookId", authentication, bookController.getBooksByParams);
 router.put("/books/:bookId",authentication,authorization,  bookController.updateBooks);
 router.delete("/books/:bookId", authentication, authorization, bookController.deleteBookPathParam);
 router.post("/books/:bookId/review", reviewController.createReview);
-
+router.put("/books/:bookId/review/:reviewId",reviewController.updateReview)
 
 
 router.all("/*", function (req, res) {
