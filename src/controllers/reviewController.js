@@ -29,7 +29,7 @@ const createReview = async function (req, res) {
       return res
         .status(400)
         .send({ status: false, message: "please enter bookId" });
-    let findBookBybody = await bookModel.findOne({ _id: body.bookId });
+    let findBookBybody = await bookModel.findOneAndUpdate({ _id: body.bookId, isDeleted: false }, { $inc: { reviews: 1 } });
     if (!findBookBybody)
       return res.status(400).send({ status: false, message: "no data exist" });
 
@@ -136,5 +136,35 @@ const updateReview = async function (req, res) {
 
 }
 
+const deleteReview = async function (req, res) {
+
+  const reviewId = req.params.reviewId
+  const bookId = req.params.bookId
+
+  if (!mongoose.Types.ObjectId.isValid(bookId))
+    return res
+      .status(400)
+      .send({ status: false, message: "enter valid book ID in params" });
+
+  if (!mongoose.Types.ObjectId.isValid(reviewId))
+    return res
+      .status(400)
+      .send({ status: false, message: "enter valid review ID in params" });
+
+  let findBookId = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { $inc: { reviews: -1 } })
+  if (!findBookId) return res.status(400).send({ status: false, message: "BookId is not present" })
+
+  let findreviewId = await reviewModel.findOneAndUpdate({ _id: reviewId, isDeleted: false }, { isDeleted: true })
+  if (!findreviewId) return res.status(400).send({ status: false, message: "ReviewId is not present" })
+
+  if (findBookId._id.toString() != findreviewId.bookId.toString()) return res.status(400).send({ status: false, message: "you have not reviewed in this book" })
+
+  return res.status(200).send({ status: true, message: "Review Successfully deleted" })
+
+}
+
+
+
 module.exports.createReview = createReview;
 module.exports.updateReview = updateReview;
+module.exports.deleteReview = deleteReview;
