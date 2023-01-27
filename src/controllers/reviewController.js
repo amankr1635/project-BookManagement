@@ -2,12 +2,11 @@ const mongoose = require("mongoose");
 const reviewModel = require("../models/reviewModel");
 const bookModel = require("../models/bookModel");
 const { isValidName } = require("../validators/validation");
-const moment = require("moment")
 
 
 const createReview = async function (req, res) {
   try {
-    let { bookId, review } = req.params;
+    let { bookId } = req.params;
     let body = req.body;
 
     if (!body || Object.keys(body).length == 0) return res.status(400).send({ status: false, message: "Enter data in body." })
@@ -100,7 +99,6 @@ const updateReview = async function (req, res) {
     let bookId = req.params.bookId;
     let reviewId = req.params.reviewId;
     let body = req.body;
-    let { review, rating, reviewedBy } = body
 
     if (!mongoose.Types.ObjectId.isValid(bookId))
       return res
