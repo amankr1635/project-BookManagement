@@ -2,12 +2,9 @@ const mongoose = require("mongoose");
 const bookModel = require("../models/bookModel");
 const userModel = require("../models/userModel");
 const reviewModel = require("../models/reviewModel");
-const moment = require("moment")
+const moment = require("moment");
 
-const {
-  isValidString,
-  ISBNRegex,
-} = require("../validators/validation");
+const { isValidString, ISBNRegex } = require("../validators/validation");
 
 const createBook = async function (req, res) {
   try {
@@ -16,7 +13,9 @@ const createBook = async function (req, res) {
       body;
 
     if (Object.keys(body).length == 0)
-      return res.status(400).send({ status: false, message: "Please provide data in body." });
+      return res
+        .status(400)
+        .send({ status: false, message: "Please provide data in body." });
 
     if (!title)
       return res.status(400).send({ status: false, message: "Provide title." });
@@ -70,9 +69,11 @@ const createBook = async function (req, res) {
         .send({ status: false, message: "Enter ISBN in string." });
 
     if (!ISBNRegex(ISBN))
-      return res
-        .status(400)
-        .send({ status: false, message: "Enter valid ISBN, its length should be either 10 or 13 digits(The 978- prefix is the EAN product code indicating a unique title, edition, digital publication, or other item. It will change as the number of publications increases.) Ex - 978-0-313-33040-7. Please explore in given link - https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s13.html " });
+      return res.status(400).send({
+        status: false,
+        message:
+          "Enter valid ISBN, its length should be either 10 or 13 digits(The 978- prefix is the EAN product code indicating a unique title, edition, digital publication, or other item. It will change as the number of publications increases.) Ex - 978-0-313-33040-7. Please explore in given link - https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s13.html ",
+      });
 
     let isbnPresent = await bookModel.findOne({ ISBN: ISBN });
     if (isbnPresent)
@@ -98,11 +99,11 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Enter subcategory in string." });
 
-        body.releasedAt = moment().format("YYYY-MM-DD")
-    
-      // return res
-      //   .status(400)
-      //   .send({ status: false, message: "Provide released time." });
+    body.releasedAt = moment().format("YYYY-MM-DD");
+
+    // return res
+    //   .status(400)
+    //   .send({ status: false, message: "Provide released time." });
 
     // if (regForDate(releasedAt) == false)
     //   return res.status(400).send({
@@ -136,7 +137,6 @@ const getBooks = async function (req, res) {
       return res
         .status(200)
         .send({ status: true, message: "Book List", data: allBooks });
-
     }
     if (!(userId || category || subcategory))
       return res.status(400).send({
@@ -222,12 +222,10 @@ const updateBooks = async function (req, res) {
           .status(400)
           .send({ status: false, message: "Incorrect title." });
       if (title.length < 3)
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: "Can contain only minimum 3 letters.",
-          });
+        return res.status(400).send({
+          status: false,
+          message: "Can contain only minimum 3 letters.",
+        });
       let findTitle = await bookModel.findOne({ title });
       if (findTitle)
         return res
@@ -266,18 +264,19 @@ const updateBooks = async function (req, res) {
 };
 
 const deleteBookPathParam = async function (req, res) {
-try{  let bookId = req.params.bookId;
+  try {
+    let bookId = req.params.bookId;
 
-  await bookModel.findOneAndUpdate(
-    { _id: bookId },
-    { isDeleted: true, deletedAt: Date.now(), reviews: 0 }
-  )
+    await bookModel.findOneAndUpdate(
+      { _id: bookId },
+      { isDeleted: true, deletedAt: Date.now(), reviews: 0 }
+    );
 
-  await reviewModel.updateMany({ bookId: bookId }, { isDeleted: true })
+    await reviewModel.updateMany({ bookId: bookId }, { isDeleted: true });
 
-  return res.status(200).send({ status: true, message: "Books deleted." });}
-  catch(err){
-    return res.status(500).send({status: false,  message: err.message})
+    return res.status(200).send({ status: true, message: "Books deleted." });
+  } catch (err) {
+    return res.status(500).send({ status: false, message: err.message });
   }
 };
 

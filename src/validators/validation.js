@@ -36,16 +36,17 @@ const isValidString = function (input) {
   return true;
 };
 
-const ISBNRegex = function(input){
- let isbnregex = /^(?:ISBN(?:-1[03])?:?●)?(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-●]){4})[-●0-9]{17}$)(?:97[89][-●]?)?[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$/
-return isbnregex.test(input)
-}
+const ISBNRegex = function (input) {
+  let isbnregex =
+    /^(?:ISBN(?:-1[03])?:?●)?(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-●]){4})[-●0-9]{17}$)(?:97[89][-●]?)?[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$/;
+  return isbnregex.test(input);
+};
 module.exports = {
   isValidateEmail,
   passwordVal,
   isValidName,
   isValidNo,
   isValidPin,
-  isValidString,ISBNRegex
+  isValidString,
+  ISBNRegex,
 };
-

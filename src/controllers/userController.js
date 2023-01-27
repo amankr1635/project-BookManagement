@@ -25,7 +25,8 @@ const createUser = async function (req, res) {
     if (title != "Mr" && title != "Mrs" && title != "Miss".trim())
       return res.status(400).send({
         status: false,
-        message: "Please enter title as 'Mr', 'Mrs', 'Miss', and it must be in string.",
+        message:
+          "Please enter title as 'Mr', 'Mrs', 'Miss', and it must be in string.",
       });
 
     if (!name)
@@ -46,7 +47,10 @@ const createUser = async function (req, res) {
     if (!isValidNo(phone.trim()))
       return res
         .status(400)
-        .send({ status: false, message: "Please enter a valid Mobile number." });
+        .send({
+          status: false,
+          message: "Please enter a valid Mobile number.",
+        });
 
     if (!email)
       return res
@@ -103,7 +107,10 @@ const loginUser = async function (req, res) {
     if (!email || !password)
       return res
         .status(400)
-        .send({ status: false, message: "Please enter Email Id and Password." });
+        .send({
+          status: false,
+          message: "Please enter Email Id and Password.",
+        });
 
     let userData = await userModel.findOne({
       email: email,
