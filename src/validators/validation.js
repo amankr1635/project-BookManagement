@@ -35,10 +35,7 @@ const isValidString = function (input) {
 
   return true;
 };
-const regForDate = function (input) {
-  let re = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
-  return re.test(input);
-};
+
 const ISBNRegex = function(input){
  let isbnregex = /^(?:ISBN(?:-1[03])?:?●)?(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-●]){4})[-●0-9]{17}$)(?:97[89][-●]?)?[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$/
 return isbnregex.test(input)
@@ -49,7 +46,6 @@ module.exports = {
   isValidName,
   isValidNo,
   isValidPin,
-  regForDate,
   isValidString,ISBNRegex
 };
 
