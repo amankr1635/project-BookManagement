@@ -50,19 +50,19 @@ const createBook = async function (req, res) {
       return res
         .status(400)
         .send({ status: false, message: "Provide user ID" });
-        if (!mongoose.Types.ObjectId.isValid(userId))
-        return res
+    if (!mongoose.Types.ObjectId.isValid(userId))
+      return res
         .status(400)
         .send({ status: false, message: "user ID is incorrect" });
-        
-        let checkUser = await userModel.findById(userId);
-        if (!checkUser)
-          return res.status(404).send({
-            status: false,
-            message: "No user found with this user ID",
-          });
-        if (!ISBN)
-        return res.status(400).send({ status: false, message: "Provide ISBN" });
+
+    let checkUser = await userModel.findById(userId);
+    if (!checkUser)
+      return res.status(404).send({
+        status: false,
+        message: "No user found with this user ID",
+      });
+    if (!ISBN)
+      return res.status(400).send({ status: false, message: "Provide ISBN" });
     if (!isValidString(ISBN))
       return res
         .status(400)
@@ -266,9 +266,10 @@ const deleteBookPathParam = async function (req, res) {
 
   await bookModel.findOneAndUpdate(
     { _id: bookId },
-    { isDeleted: true },
-    { new: true }
-  );
+    { isDeleted: true, deletedAt: Date.now(), reviews: 0 }
+  )
+
+  await reviewModel.updateMany({ bookId: bookId }, { isDeleted: true })
 
   return res.status(200).send({ status: true, message: "Books deleted" });
 };
