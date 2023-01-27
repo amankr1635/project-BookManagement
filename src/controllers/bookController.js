@@ -101,15 +101,7 @@ const createBook = async function (req, res) {
 
     body.releasedAt = moment().format("YYYY-MM-DD");
 
-    // return res
-    //   .status(400)
-    //   .send({ status: false, message: "Provide released time." });
-
-    // if (regForDate(releasedAt) == false)
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: "Please enter a valid date(YYYY-MM-DD).",
-    //   });
+   
 
     //Authorization---------------------------------------------
     let tokenId = req.decodedToken.userId;
@@ -130,7 +122,7 @@ const createBook = async function (req, res) {
 const getBooks = async function (req, res) {
   try {
     let query = req.query;
-    console.log(query);
+    
     const { userId, category, subcategory } = query;
     if (Object.keys(query).length == 0) {
       let allBooks = await bookModel.find({ isDeleted: false });
@@ -190,7 +182,7 @@ const getBooksByParams = async function (req, res) {
     let reviewData = await reviewModel
       .find({ bookId: bookData._id, isDeleted: false })
       .select({ __v: 0, createdAt: 0, updatedAt: 0 });
-    // console.log(reviewData)
+    
 
     bookData.reviews = reviewData.length;
     bookData.reviewsData = reviewData;
