@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const reviewModel = require("../models/reviewModel");
 const bookModel = require("../models/bookModel");
-const { isValidName } = require("../validators/validation");
+const { isValidName, isValidString } = require("../validators/validation");
 
 const createReview = async function (req, res) {
   try {
@@ -121,12 +121,32 @@ const updateReview = async function (req, res) {
         releasedAt: 0,
       })
       .lean();
-if(body.rating){
-    if (![1, 2, 3, 4, 5].includes(body.rating))
-      return res
-        .status(400)
-        .send({ status: false, message: "Rating must be 1,2,3,4 or 5." });
- }
+    if (body.rating) {
+      if (![1, 2, 3, 4, 5].includes(body.rating))
+        return res
+          .status(400)
+          .send({ status: false, message: "Rating must be 1,2,3,4 or 5." });
+    }
+
+    if (body.review || body.review == "") {
+      if (!isValidString(body.review))
+        return res
+          .status(400)
+          .send({ status: false, message: "Review can't be empty" });
+    }
+    if (body.reviewedBy || body.reviewedBy == "") {
+      if (!isValidString(body.reviewedBy))
+        return res
+          .status(400)
+          .send({ status: false, message: "Reviewed By can't be empty" });
+      if (!isValidName(body.reviewedBy))
+        return res
+          .status(400)
+          .send({
+            status: false,
+            message: "Reviewed By can only take alphabets",
+          });
+    }
 
     let updatingReview = await reviewModel
       .findOneAndUpdate(

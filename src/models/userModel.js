@@ -21,12 +21,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true
-      // valid check
     },
     password: {
       type: String,
-      required: true
-      // min 8 max -15      
+      required: true  
     },
     address: {
       street: String,
