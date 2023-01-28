@@ -22,7 +22,7 @@ const createUser = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Please enter title in body." });
 
-    if (title != "Mr" && title != "Mrs" && title != "Miss".trim())
+    if (title != "Mr" && title != "Mrs" && title != "Miss")
       return res.status(400).send({
         status: false,
         message:
