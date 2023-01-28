@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { default: mongoose } = require("mongoose");
 const bookModel = require("../models/bookModel");
+const reviewModel = require("../models/reviewModel");
 
 // ------Authentication------
 
@@ -24,23 +25,45 @@ const authentication = async function (req, res, next) {
 
 const authorization = async function (req, res, next) {
   let userId = req.decodedToken.userId;
-  let params = req.params.bookId;
-  if (!mongoose.Types.ObjectId.isValid(params))
-    return res.status(400).send({ status: false, message: "Invalid book ID" });
-  let bookData = await bookModel.findOne({ _id: params });
+  let bookId = req.params.bookId;
+  if (!mongoose.Types.ObjectId.isValid(bookId))
+  return res.status(400).send({ status: false, message: "Invalid book ID" });
+  
+  let bookData = await bookModel.findOne({ _id: bookId });
   if (!bookData)
-    return res.status(400).send({ status: false, message: "no book found" });
+  return res.status(400).send({ status: false, message: "Book with this ID is not present." });
+  
   if (userId != bookData.userId)
-    return res
-      .status(403)
-      .send({ status: false, message: "You are not authorized" });
+  return res
+  .status(403)
+  .send({ status: false, message: "You are not authorized" });
   if (bookData.isDeleted == true) {
-    return res
+      return res
       .status(404)
       .send({ status: false, message: "document already deleted" });
-  }
-
-  next();
+    }
+    
+    next();
 };
 
-module.exports = { authentication, authorization };
+const reviewAuth = async function(req,res,next){
+    let bookId = req.params.bookId;
+    let reviewId = req.params.reviewId
+    if (!mongoose.Types.ObjectId.isValid(bookId))
+    return res.status(400).send({ status: false, message: "Invalid book ID" });
+    
+    let bookData = await bookModel.findOne({ _id: bookId });
+    if (!bookData)
+    return res.status(400).send({ status: false, message: "Book with this ID is not present." });
+  
+    if (!mongoose.Types.ObjectId.isValid(reviewId))
+    return res.status(400).send({ status: false, message: "Invalid reviewId " });
+    let findreviewId = await reviewModel.findOne({ _id: reviewId, isDeleted: false });
+      if (!findreviewId)return res.status(400).send({status: false,message: "Review is not present with given Review Id.",});
+      if(bookData._id.toString() != findreviewId.bookId.toString())
+      return res.status(400).send({status: false,message: "You have not reviewed in this book."});
+
+next()
+}
+
+module.exports = { authentication, authorization ,reviewAuth};

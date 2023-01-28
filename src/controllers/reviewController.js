@@ -105,22 +105,10 @@ const updateReview = async function (req, res) {
     let reviewId = req.params.reviewId;
     let body = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(bookId))
-      return res
-        .status(400)
-        .send({ status: false, message: "Enter valid book ID in params." });
-
-    if (!mongoose.Types.ObjectId.isValid(reviewId))
-      return res
-        .status(400)
-        .send({ status: false, message: "Enter valid review ID in params." });
-
     if (Object.keys(body).length == 0)
       return res
         .status(400)
         .send({ status: false, message: "Enter data in body." });
-
-
 
     let bookPresent = await bookModel
       .findOne({ _id: bookId, isDeleted: false })
@@ -133,35 +121,12 @@ const updateReview = async function (req, res) {
         releasedAt: 0,
       })
       .lean();
-
-    if (!bookPresent)
-      return res
-        .status(404)
-        .send({ status: false, message: "Book with this ID is not present." });
-
-    findingReview = await reviewModel.findOne({ _id: reviewId, isDeleted: false })
-
-    if (!findingReview)
-      return res
-        .status(404)
-        .send({
-          status: false,
-          message: "Review with this ID is not present.",
-        });
-
-    if (bookPresent._id.toString() != findingReview.bookId.toString())
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "You have not reviewed in this book.",
-        });
-
-
+if(body.rating){
     if (![1, 2, 3, 4, 5].includes(body.rating))
       return res
         .status(400)
         .send({ status: false, message: "Rating must be 1,2,3,4 or 5." });
+ }
 
     let updatingReview = await reviewModel
       .findOneAndUpdate(
@@ -184,45 +149,6 @@ const deleteReview = async function (req, res) {
   try {
     const reviewId = req.params.reviewId;
     const bookId = req.params.bookId;
-
-    if (!mongoose.Types.ObjectId.isValid(bookId))
-      return res
-        .status(400)
-        .send({ status: false, message: "Enter valid book ID in params." });
-
-    if (!mongoose.Types.ObjectId.isValid(reviewId))
-      return res
-        .status(400)
-        .send({ status: false, message: "Enter valid review ID in params." });
-
-    let findreviewId = await reviewModel.findOne(
-      { _id: reviewId, isDeleted: false }
-    );
-    if (!findreviewId)
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "Review is not present with given Review Id.",
-        });
-    let findBookId = await bookModel.findOne(
-      { _id: bookId, isDeleted: false }
-    );
-    if (!findBookId)
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "Book is not present with given Book Id.",
-        });
-
-    if (findBookId._id.toString() != findreviewId.bookId.toString())
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "You have not reviewed in this book.",
-        });
 
     await reviewModel.findOneAndUpdate(
       { _id: reviewId, isDeleted: false },

@@ -4,7 +4,7 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const bookController = require("../controllers/bookController");
 const reviewController = require("../controllers/reviewController");
-const { authentication, authorization } = require("../middleware/middleware");
+const { authentication, authorization, reviewAuth } = require("../middleware/middleware");
 
 router.post("/register", userController.createUser);
 router.post("/login", userController.loginUser);
@@ -14,8 +14,8 @@ router.get("/books/:bookId", authentication, bookController.getBooksByParams);
 router.put("/books/:bookId", authentication, authorization, bookController.updateBooks);
 router.delete("/books/:bookId", authentication, authorization, bookController.deleteBookPathParam);
 router.post("/books/:bookId/review", reviewController.createReview);
-router.put("/books/:bookId/review/:reviewId", reviewController.updateReview);
-router.delete("/books/:bookId/review/:reviewId", reviewController.deleteReview);
+router.put("/books/:bookId/review/:reviewId",reviewAuth, reviewController.updateReview);
+router.delete("/books/:bookId/review/:reviewId", reviewAuth, reviewController.deleteReview);
 
 
 router.all("/*", function (req, res) {
