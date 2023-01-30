@@ -73,11 +73,13 @@ const createUser = async function (req, res) {
         message:
           "Password must be in the Range of 8 to 15 , please enter atleast 1 lowercase, 1 uppercase, 1 numeric character and one special character.",
       });
+    if(address){
+     if(!address.street ||!address.city||!address.pincode ) return res.status(400).send({status: false, message: "please enter street, city and pincode"})
     if (!isValidPin(address.pincode))
       return res
         .status(400)
         .send({ status: false, message: "Please enter valid pincode." });
-
+      }
     let findPhone = await userModel.findOne({ phone: phone });
     if (findPhone) {
       return res
