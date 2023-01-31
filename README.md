@@ -167,6 +167,7 @@ Refer below sample
 ```
 
 ## Collections
+
 ## users
 ```yaml
 {
