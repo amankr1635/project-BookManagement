@@ -4,7 +4,6 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const bookController = require("../controllers/bookController");
 const reviewController = require("../controllers/reviewController");
-const awsController = require("../controllers/awsController")
 const { authentication, authorization, reviewAuth } = require("../middleware/middleware");
 
 //router.post("/test",awsController.awsUpload)
