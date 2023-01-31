@@ -134,6 +134,9 @@
 - Make sure that only the owner of the books is able to create, edit or delete the book.
 - In case of unauthorized access return an appropirate error message.
 
+## Assignment:
+ add bookCover(string) key in your bookModel in Book managemt project. When book is being created , take up the book cover as an image , upload it to s3 and save the url in bookCover key. Submit a short explainer video on the same( individually)
+
 ## Testing 
 - To test these apis create a new collection in Postman named Project 4 Books Management 
 - Each api should have a new request in this collection
