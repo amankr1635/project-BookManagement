@@ -3,8 +3,48 @@ const bookModel = require("../models/bookModel");
 const userModel = require("../models/userModel");
 const reviewModel = require("../models/reviewModel");
 const moment = require("moment");
+const aws = require("aws-sdk")
 
 const { isValidString, ISBNRegex } = require("../validators/validation");
+
+
+
+
+
+aws.config.update({
+  
+  accessKeyId:"AKIAY3L35MCRZNIRGT6N",
+  secretAccessKey:"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",
+  region:"ap-south-1"
+})
+
+
+
+  let uploadFile= async ( file) =>{
+      return new Promise( function(resolve, reject) {
+       
+       let s3= new aws.S3({apiVersion: '2006-03-01'}); 
+   
+       var uploadParams= {
+           ACL: "public-read",
+           Bucket: "classroom-training-bucket",  
+           Key: "ABAA/BookManagement/" + file.originalname, 
+           Body: file.buffer
+       }
+   
+   
+       s3.upload( uploadParams, function (err, data ){
+           if(err) {
+               return reject({"error": err})
+           }
+           console.log(data)
+           console.log("file uploaded succesfully")
+           return resolve(data.Location)
+       })   
+      })
+   }
+
+
 
 const createBook = async function (req, res) {
   try {
@@ -101,8 +141,6 @@ const createBook = async function (req, res) {
 
     body.releasedAt = moment().format("YYYY-MM-DD");
 
-   
-
     //Authorization---------------------------------------------
     let tokenId = req.decodedToken.userId;
     if (tokenId != checkUser._id)
@@ -110,6 +148,21 @@ const createBook = async function (req, res) {
         status: false,
         message: "You are not authorized.",
       });
+
+    
+    let files= req.files
+    if(files && files.length>0){
+        let uploadedFileURL= await uploadFile( files[0] )
+        body.bookCover = uploadedFileURL
+  
+    }
+    else{
+       return res.status(400).send({ msg: "Please enter file" })
+    }
+
+
+
+
     let created = await bookModel.create(body);
     return res
       .status(201)
@@ -125,7 +178,7 @@ const getBooks = async function (req, res) {
     
     const { userId, category, subcategory } = query;
     if (Object.keys(query).length == 0) {
-      let allBooks = await bookModel.find({ isDeleted: false });
+      let allBooks = await bookModel.find({ isDeleted: false }).sort({title:1});
       return res
         .status(200)
         .send({ status: true, message: "Book List", data: allBooks });
@@ -241,6 +294,8 @@ const updateBooks = async function (req, res) {
           .status(400)
           .send({ status: false, message: "ISBN already taken." });
     }
+
+    
     let updateData = await bookModel.findOneAndUpdate(
       { _id: bookId },
       { ...body },

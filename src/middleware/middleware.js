@@ -32,7 +32,7 @@ const authorization = async function (req, res, next) {
   let bookData = await bookModel.findOne({ _id: bookId });
   if (!bookData)
     return res
-      .status(400)
+      .status(404)
       .send({ status: false, message: "Book with this ID is not present." });
 
   if (userId != bookData.userId)
@@ -54,10 +54,10 @@ const reviewAuth = async function (req, res, next) {
   if (!mongoose.Types.ObjectId.isValid(bookId))
     return res.status(400).send({ status: false, message: "Invalid book ID" });
 
-  let bookData = await bookModel.findOne({ _id: bookId });
+  let bookData = await bookModel.findOne({ _id: bookId,isDeleted:false });
   if (!bookData)
     return res
-      .status(400)
+      .status(404)
       .send({ status: false, message: "Book with this ID is not present." });
 
   if (!mongoose.Types.ObjectId.isValid(reviewId))
@@ -70,7 +70,7 @@ const reviewAuth = async function (req, res, next) {
   });
   if (!findreviewId)
     return res
-      .status(400)
+      .status(404)
       .send({
         status: false,
         message: "Review is not present with given Review Id.",

@@ -98,13 +98,15 @@ const createReview = async function (req, res) {
     return res.status(500).send({ status: false, message: err.message });
   }
 };
-
+//review, rating, reviewer's name.
 const updateReview = async function (req, res) {
   try {
     let bookId = req.params.bookId;
     let reviewId = req.params.reviewId;
-    let body = req.body;
+ let body = req.body
+let {review,rating,reviewedBy}=body
 
+    
     if (Object.keys(body).length == 0)
       return res
         .status(400)
@@ -148,10 +150,53 @@ const updateReview = async function (req, res) {
           });
     }
 
+
+
+
+
+    let updateData = {};
+
+    if (body.reviewedBy || body.reviewedBy == "") {
+      if (!isValidString(body.reviewedBy))
+        return res
+          .status(400)
+          .send({ status: false, message: "Reviewed By can't be empty" });
+      if (!isValidName(body.reviewedBy))
+        return res
+          .status(400)
+          .send({
+            status: false,
+            message: "Reviewed By can only take alphabets",
+          });
+          updateData.reviewedBy = reviewedBy;
+    }
+        
+    
+
+    if (body.review || body.review == "") {
+      if (!isValidString(body.review))
+        return res
+          .status(400)
+          .send({ status: false, message: "Review can't be empty" });
+        updateData.review = review;
+    }
+
+    if (rating) {
+      if (![1, 2, 3, 4, 5].includes(body.rating))
+      return res
+        .status(400)
+        .send({ status: false, message: "Rating must be 1,2,3,4 or 5." });
+        updateData.rating = rating;
+    }
+
+
+
+
+
     let updatingReview = await reviewModel
       .findOneAndUpdate(
         { _id: reviewId, isDeleted: false },
-        { ...body },
+        updateData,
         { new: true }
       )
       .select({ __v: 0, isDeleted: 0 });
